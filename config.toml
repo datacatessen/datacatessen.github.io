@@ -1,7 +1,96 @@
-# Academic Website Builder
-# https://sourcethemes.com/academic/
-#
-# The presence of this file is for compatibility with Blogdown and Forestry.
-# If you are not using those tools, this file may be deleted.
-#
-# The actual configuration files are stored in the `config/_default/` folder.
+baseURL = "http://datacatessen.github.io/"
+languageCode = "en-us"
+title = "Datacatessen"
+theme = "timer-hugo"
+
+# We Used Ionicons Icon font for Icon, for more details check this link - https://ionicons.com/
+
+# Navbar Menus
+# [[menu.main]]
+# name    = "About"
+# url     = "about"
+# weight  = 2
+# [[menu.main]]
+# name    = "Services"
+# url     = "service"
+# weight  = 3
+# [[menu.main]]
+# name    = "Gallery"
+# url     = "gallery"
+# weight  = 4
+[[menu.main]]
+name    = "Blog"
+url     = "blog"
+weight  = 5
+[[menu.main]]
+name    = "Contact"
+url     = "contact"
+weight  = 6
+
+# Site Params
+[params]
+home = "Home"
+logo = "images/logo.png"
+dateFormat = "6 January 2006"
+# Meta data
+description = "Airspace Hugo theme"
+author = "Themefisher"
+# Google Analitycs
+googleAnalitycsID = "Your ID"
+# contact form action
+contactFormAction = "#" # contact form works with https://formspree.io
+custom_css = ["css/overrides.css"]
+
+# Banner Section
+[params.banner]
+enable  = true
+bgImage = "images/slider.jpg"
+heading = ""
+description = ""
+
+# button
+btn     = true
+btnText = "Find Out More"
+btnURL  = "contact"
+
+# flip text
+[[params.banner.flipText]]
+title   = "Smoked Meats"
+[[params.banner.flipText]]
+title   = "Cold Beer"
+[[params.banner.flipText]]
+title   = "Big Data"
+
+# Homepage About Section
+[params.about]
+enable  = true
+title   = "Datacatessen"
+content = "da·ta·ca·tes·sen /dādəkəˈtes(ə)n/ <br> <i>noun</i> <br> A boutique big data solutions company specializing in data architecture and engineering with open-source and cloud technologies"
+image   = "images/about/about.jpg"
+
+# Call to Action
+[params.cta]
+enable  = true
+title   = "Want to know more?"
+content = "Ask us how we can help"
+btnText = "Click Here"
+btnURL  = "/contact"
+
+# Portfolio Section On Homepage
+[params.portfolio]
+enable  = true
+title   = "Latest Works"
+subtitle= "Aliquam lobortis. Maecenas vestibulum mollis diam. Pellentesque auctor neque nec urna. Nulla sit amet est. Aenean posuere tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus."
+
+# social icon
+[[params.socialIcon]]
+icon = "ion-social-github"
+url = "https://github.com/datacatessen"
+
+[[params.socialIcon]]
+icon = "ion-social-linkedin"
+url = "https://www.linkedin.com/company/datacatessen-llc"
+
+# [[params.socialIcon]]
+# icon = "ion-social-facebook"
+# url = "https://www.facebook.com/datacatessen"

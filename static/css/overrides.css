@@ -1,0 +1,42 @@
+#hero-area:before {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#hero-area .btn {
+    color: #333;
+    background: rgba(255,255,255,.85);
+    text-transform: none;
+}
+
+.global-page-header {
+  background: #337ab7;
+}
+
+#contact-section .contact-form .btn-send {
+    background: #337ab7;
+}
+
+#contact-section .email i {
+    color: #337ab7;
+}
+
+.blog-content .btn-details {
+    background: #337ab7;
+}
+
+.cd-headline.slide .cd-words-wrapper {
+    color: #111;
+    font-size: 64px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;
+}
+
+#call-to-action {
+  background: #337ab7;
+}
+
+#call-to-action .block .btn-contact {
+    color: #337ab7;
+    background: rgba(255,255,255,.85);
+    text-transform: none;
+}
