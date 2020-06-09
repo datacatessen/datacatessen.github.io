@@ -13,25 +13,35 @@ The Hive Connector is often considered the standard connector for Presto.  This 
 
 Presto has two core services for executing queries. A _Coordinator_, which is responsible for query parsing and scheduling (among other things), and many _Workers_ which execute the queries in parallel.  The Coordinator can also act as a Worker, though it is not used for production environments.  Since we're playing with Presto here, we'll just use one node to act as both a Coordinator and Worker.  More detailed documentation, including installation details, can be found [here](https://prestodb.io/docs/current/).
 
-Let's take a look at getting a Docker image together for Presto (though they already exist on Dockerhub, e.g. [ahanaio/prestodb](https://hub.docker.com/r/ahanaio/prestodb)).  We can see below how relatively easy it is to get Presto up and running.  We download Presto, copy some configuration files in a local `etc` directory into the image, and specify an entry point to run the server.
+Let's take a look at getting a Docker image together for Presto (though they already exist on Dockerhub, e.g. [ahanaio/prestodb-sandbox](https://hub.docker.com/r/ahanaio/prestodb-sandbox)).  We can see below how relatively easy it is to get Presto up and running.  We download Presto, copy some configuration files in a local `etc` directory into the image, and specify an entry point to run the server.
 
 ```Dockerfile
 FROM openjdk:8-jre
 
+# Pick our Presto Version and the URL to download
 ARG PRESTO_VERSION=0.235.1
 ARG PRESTO_BIN=https://repo1.maven.org/maven2/com/facebook/presto/presto-server/${PRESTO_VERSION}/presto-server-${PRESTO_VERSION}.tar.gz
 
+# Update the base image OS and install wget and python
 RUN apt-get update
 RUN apt-get install -y wget python
 
+# Download Presto and unpack it to /opt/presto
 RUN wget --quiet ${PRESTO_BIN}
 RUN mkdir -p /opt
 RUN tar -xf presto-server-${PRESTO_VERSION}.tar.gz -C /opt
 RUN rm presto-server-${PRESTO_VERSION}.tar.gz
 RUN ln -s /opt/presto-server-${PRESTO_VERSION} /opt/presto
 
+# Copy configuration files on the host into the image
 COPY etc /opt/presto/etc
 
+# Download the Presto CLI and put it in the image
+RUN wget --quiet https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/${PRESTO_VERSION}/presto-cli-${PRESTO_VERSION}-executable.jar
+RUN mv presto-cli-${PRESTO_VERSION}-executable.jar /usr/local/bin/presto
+RUN chmod +x /usr/local/bin/presto
+
+# Specify the entrypoint to start
 ENTRYPOINT /opt/presto/bin/launcher run
 ```
 
@@ -71,12 +81,10 @@ docker build . -t prestodb:latest
 docker run --name presto --network host prestodb:latest
 ```
 
-We'll use the [Presto CLI](https://prestodb.io/docs/current/installation/cli.html) to connect to Presto.
+We'll use the [Presto CLI](https://prestodb.io/docs/current/installation/cli.html) to connect to Presto that we put inside the image.
 
 ```
-wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.235.1/presto-cli-0.235.1-executable.jar
-mv presto-cli-0.235.1-executable.jar /usr/local/bin/presto
-presto --server localhost:8080 --catalog hive --schema default
+docker exec -it presto presto
 ```
 
 Next, we will create our schema to hold the TPC-H data set and then create the tables.  By default, Presto will create ORC files, which is convenient for us since that is what we're looking at testing.  We are using the `sf100` TPC-H schema to create a data set of about 23 GB total.  This should give us enough data to show off the Aria enhancements.  (The `sf` stands for _scale factor_ and is about 100 times larger than the `sf1` schema.)
