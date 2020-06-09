@@ -186,7 +186,7 @@ Fragment 1 [SOURCE]
                     :: [[1992-01-01, 1992-12-31]]
 ```
 
-Note the major difference in the query plan, the addition of a column and range in the table scan (bolded). We see here that the connector now notices the predicate on the `shipdate` column of `1992-01-01` to `1992-12-31`.  Let's give it a whirl.
+Note the major difference in the query plan at the very bottom, the inclusion of `shipdate` column in the `TableScan` operation. We see here that the connector now notices the predicate on the `shipdate` column of `1992-01-01` to `1992-12-31`.  Let's give it a whirl.
 
 ```SQL
 presto:tpch> SELECT COUNT(shipdate) FROM lineitem WHERE shipdate BETWEEN DATE '1992-01-01' AND DATE '1992-12-31';
