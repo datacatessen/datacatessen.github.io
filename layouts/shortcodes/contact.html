@@ -1,0 +1,11 @@
+{{with .Site.Params.formspreeID}}
+<form class="contact-form"
+action="https://formspree.io/{{.}}"
+method="POST">
+    <input id="name" type="text" name="name" placeholder="Name">
+    <input id="mail" type="text" name="_replyto" placeholder="Email">
+    <textarea id="message" name="message" placeholder="Message"></textarea>
+
+<button class="reach-me-send" type="submit">Send</button>
+</form>
+{{end}}
