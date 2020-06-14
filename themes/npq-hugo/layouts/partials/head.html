@@ -1,17 +1,42 @@
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{with .Site.Params.description -}}
-      <meta name="description" content="{{.}}">
-    {{ end }}
-    {{- with .Site.Params.author -}}
-      <meta name="Author" content="{{.}}">
-    {{ end }}
-    {{- with .Site.Params.keywords -}}
-      <meta name="keywords" content="{{.}}">
-    {{ end -}}
-    <link rel="stylesheet" href={{ "css/syntax.css" | absURL }}>
-    <link rel="stylesheet" href={{ "css/style.css" | absURL }}>
-    <script src="https://kit.fontawesome.com/1b7478c139.js" crossorigin="anonymous"></script>
-    <title>{{ .Site.Title }}</title>
+  <meta charset=utf-8>
+  <meta http-equiv=X-UA-Compatible content="IE=edge">
+  <meta name=viewport content="width=device-width,initial-scale=1">
+  {{with .Site.Params.description -}}
+    <meta name="description" content="{{.}}">
+  {{ end }}
+  {{- with .Site.Params.author -}}
+    <meta name="Author" content="{{.}}">
+  {{ end }}
+  {{- with .Site.Params.keywords -}}
+    <meta name="keywords" content="{{.}}">
+  {{ end -}}
+  <meta content="noodp" name="robots">
+  <title>{{ .Site.Title }}</title>
+  <link rel="apple-touch-icon" sizes="57x57" href="img/icon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="img/icon/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="img/icon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="img/icon/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="img/icon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="img/icon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="img/icon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="img/icon/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/icon/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="img/icon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="img/icon/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="img/icon/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="img/icon/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="img/icon/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="manifest.json">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-TileImage" content="img/icon/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="stylesheet" href={{ "css/syntax.css" | absURL }}>
+  <link rel="stylesheet" href={{ "css/style.css" | absURL }}>
+  <script src="https://kit.fontawesome.com/1b7478c139.js" crossorigin="anonymous"></script>
+  <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel=stylesheet>
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
   </head>

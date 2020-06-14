@@ -8,8 +8,7 @@ logo = "avatar.png"
 
 [params]
   author = "Datacatessen, LLC"
-  description = "A boutique big data solutions company specializing in data architecture and engineering with open-source and cloud technologies"
-  keywords = "hugo blog"
+  description = "Datacatessen is a boutique big data solutions company specializing in data architecture and engineering"
   useAvatar = true
   microBlogSection = "posts"
   displayMicroBlog = false
