@@ -39,11 +39,11 @@ logo = "avatar.png"
     pre = "<i class=\"fas fa-tags fa-ms\"></i>"
     url = "/tags"
     weight = -7
-  [[menu.main]]
-    name = "github"
-    pre = "<i class=\"fab fa-github fa-ms\"></i>"
-    url = "https://github.com/datacatessen"
-    weight = -6
+  # [[menu.main]]
+  #   name = "github"
+  #   pre = "<i class=\"fab fa-github fa-ms\"></i>"
+  #   url = "https://github.com/datacatessen"
+  #   weight = -6
   [[menu.main]]
     name = "contact"
     pre = "<i class=\"far fa-envelope\"></i>"

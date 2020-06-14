@@ -1,15 +1,15 @@
 ---
 title: "Getting Started with PrestoDB and Aria Scan Optimizations"
-date: 2020-05-25
+date: 2020-06-14
 draft: false
 tags: ["presto", "open-source", "tech"]
 ---
 
 [PrestoDB](https://prestodb.io) recently released a set of experimental features under their Aria project in order to increase table scan performance of data stored in ORC files via the Hive Connector.  In this post, we'll check out these new features at a very basic level using a test environment of PrestoDB on Docker.  To find out more about the Aria features, you can check out the [Facebook Engineering](https://engineering.fb.com/data-infrastructure/aria-presto/) blog post which was published June 2019.
 
-Presto a massively parellel processing (MPP) SQL execution engine.  The engine itself is disconnected from where data is stored, and the project contains numerous plugins, called _Connectors_, that provide the Presto engine with data for query execution.  Data is read from the data store, then handed to Presto where it takes over to perform the operations of the query, such as joining data and performing aggregations.  This decoupling of data storage and execution allows for a single Presto instance to query various data sources, providing a very powerful federated query layer.  There are many connectors available for Presto, and the community regularly provides additional connectors for data stores.
+Presto is a massively parallel processing (MPP) SQL execution engine.  The execution engine is decoupled from data storage, and the project contains numerous plugins, called _Connectors_, that provide the Presto engine with data for query execution.  Data is read from the data store, then handed to Presto where it takes over to perform the operations of the query, such as joining data and performing aggregations.  This decoupling of data storage and execution allows for a single Presto instance to query various data sources, providing a very powerful federated query layer.  There are many connectors available for Presto, and the community regularly provides additional connectors for data stores.
 
-The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive metaastore, which exposes metadata about the tables defined in the metastore.  Data is typically stored in HDFS or S3, and the metastore provides information about where the files are stored and in what format, typically ORC but there are other supported formats such as Avro and Parquet.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  [ORC (Optimized Row Columnar)](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC) format is a very standard and common format for storing data, as it provides good compression and performance.
+The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive metastore, which exposes metadata about the tables defined in the metastore.  Data is typically stored in HDFS or S3, and the metastore provides information about where the files are stored and in what format, typically ORC but there are other supported formats such as Avro and Parquet.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  [ORC (Optimized Row Columnar)](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC) format is a very standard and common format for storing data, as it provides good compression and performance.
 
 Presto has two core services for executing queries. A _Coordinator_, which is responsible for query parsing and scheduling (among other things), and many _Workers_ which execute the queries in parallel.  The Coordinator can also act as a Worker, though it is not used for production environments.  Since we're playing with Presto here, we'll just use one node to act as both a Coordinator and Worker.  More detailed documentation, including installation details, can be found [here](https://prestodb.io/docs/current/).
 
@@ -47,7 +47,7 @@ ENTRYPOINT /opt/presto/bin/launcher run
 
 There are four files in the `etc` folder to configure Presto, along with two catalogs. Details of them can be found [here](https://prestodb.io/docs/current/installation/deployment.html).  They are:
 
-```
+```bash
 etc/
 ├── catalog
 │   ├── hive.properties  # Defines configuration properties for our Hive Metastore
@@ -62,7 +62,7 @@ etc/
 The four files directly under `etc` are documented in the above link.  Let's look at the details of the two catalogs: `hive` and `tpch`. The former will be used to read data, and the latter will be used to generate data into our Hive warehouse to run queries.  Setting up Hive is outside the scope of this document, but will be covered in a future post.  In short, you need a catalog service in order to use the Hive connector, such as a Hive Metastore or AWS Glue.  The catalog service contains all of the table definitions used by Presto, and data is typically stored in HDFS or S3.  We've set up a Dockerized Hive Metastore and single-node HDFS instance.
 
 `etc/catalog/hive.properties`
-```
+```bash
 connector.name=hive-hadoop2
 hive.metastore.uri=thrift://localhost:9083/hivemetastore
 hive.metastore.username=hive
@@ -70,20 +70,20 @@ hive.allow-drop-table=true
 ```
 
 `etc/catalog/tpch.properties`
-```
+```bash
 connector.name=tpch
 ```
 
 We're now ready to build our Docker container and start Presto using `host` networking so it can talk to the metastore and HDFS which is running on the host (also in Docker).
 
-```
+```bash
 docker build . -t prestodb:latest
 docker run --name presto --network host prestodb:latest
 ```
 
 We'll use the [Presto CLI](https://prestodb.io/docs/current/installation/cli.html) to connect to Presto that we put inside the image.
 
-```
+```bash
 docker exec -it presto presto
 ```
 
@@ -200,4 +200,4 @@ Splits: 367 total, 367 done (100.00%)
 0:05 [76M rows, 928MB] [15.5M rows/s, 189MB/s]
 ```
 
-We get the same result running the query, but the query time took almost half as long and, more importantly, we see and only 76 million rows were scanned!  The connector has applied the predicate on the `shipdate` column, rather than having the engine process the predicate.  This saves some CPU cycles, resulting in faster query results. YMMV for your own queries and data sets, but if you're using the Hive connector with ORC files, it is definitely worth a look.
+We get the same result running the query, but the query time took almost half as long and, more importantly, we see only 76 million rows were scanned!  The connector has applied the predicate on the `shipdate` column, rather than having the engine process the predicate.  This saves some CPU cycles, resulting in faster query results. YMMV for your own queries and data sets, but if you're using the Hive connector with ORC files, it is definitely worth a look.
