@@ -5,8 +5,8 @@ draft: false
 ---
 
 {{<raw-html>}}
-<div class="row services">
-  <div class="column" align="center">
+<div class="row-services services">
+  <div class="column column-services" align="center">
     <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-cloud fa-stack-1x"></i></span>
     <h4>
       <strong>Solutions Architecture and Engineering</strong>
@@ -15,7 +15,7 @@ draft: false
     <p>Provide recommendations for future-proof, scalable solutions using Hadoop and other Big Data technologies</p>
     <p>Develop operational prototypes to provide functional, usable solutions that achieve the most critical goals and provide instant</p>
   </div>
-  <div class="column" align="center">
+  <div class="column column-services" align="center">
     <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-compass fa-stack-1x"></i></span>
     <h4>
       <strong>Solution Overhaul</strong>
@@ -24,7 +24,7 @@ draft: false
     <p>Deliver recommendations for overhauling existing solutions using Hadoop and other Big Data technologies</p>
     <p>Develop the solutions using real data sets to produce real results</p>
   </div>
-  <div class="column" align="center">
+  <div class="column column-services" align="center">
     <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i> <i class="fa fa-database fa-stack-1x"></i></span>
     <h4>
       <strong>Deployment and Configuration</strong>
