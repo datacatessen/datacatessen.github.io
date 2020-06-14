@@ -1,4 +1,4 @@
-baseURL = "https://datacatessen.github.io"
+baseURL = "https://datacatessen.com"
 languageCode = "en-us"
 copyright = "Copyright © 2020 Datacatessen, LLC. All Rights Reserved."
 theme = "npq-hugo"
