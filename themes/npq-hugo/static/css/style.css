@@ -24,6 +24,10 @@ html, body {
     color : #1A2433;
 }
 
+.services {
+  font-size: 18px;
+}
+
 a {
     text-decoration: none;
     color: #0080ff;
@@ -206,7 +210,39 @@ tr:nth-child(even) {
 }
 
 h1, h2, h3 {
+    font-family: 'Nixie One',sans-serif;
     border-bottom: 1px solid #3D3D3D;
+}
+
+.column {
+  float: left;
+  width: 30%;
+  margin: 1%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.fa-stack {
+  font-size: 42px;
+  text-align: center;
+  left: auto;
+}
+
+.fa-cloud:before {
+  color: #ffffff
+}
+
+.fa-compass:before {
+  color: #ffffff
+}
+
+.fa-database:before {
+  color: #ffffff
 }
 
 #title {
