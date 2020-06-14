@@ -60,4 +60,3 @@ Our consultants are well-versed in big data technologies, including:
   </div>
 </div>
 {{</raw-html>}}
-[Contact us](/contact)
