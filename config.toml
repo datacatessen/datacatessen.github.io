@@ -1,4 +1,5 @@
 baseURL = "https://datacatessen.com"
+title = "Datacatessen"
 languageCode = "en-us"
 copyright = "Copyright © 2020 Datacatessen, LLC. All Rights Reserved."
 theme = "npq-hugo"
