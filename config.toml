@@ -1,6 +1,6 @@
 baseURL = "https://datacatessen.github.io"
 languageCode = "en-us"
-copyright = "Copyright © 2020, Datacatessen, LLC All rights reserved"
+copyright = "Copyright © 2020 Datacatessen, LLC. All Rights Reserved."
 theme = "npq-hugo"
 pygmentsUseClasses=true
 logo = "avatar.png"
