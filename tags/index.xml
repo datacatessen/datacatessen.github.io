@@ -1,1 +1,43 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tags on Datacatessen</title><link>https://datacatessen.com/tags/</link><description>Recent content in Tags on Datacatessen</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Copyright © 2020 Datacatessen, LLC. All Rights Reserved.</copyright><lastBuildDate>Sun, 14 Jun 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://datacatessen.com/tags/index.xml" rel="self" type="application/rss+xml"/><item><title>open-source</title><link>https://datacatessen.com/tags/open-source/</link><pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate><guid>https://datacatessen.com/tags/open-source/</guid><description/></item><item><title>presto</title><link>https://datacatessen.com/tags/presto/</link><pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate><guid>https://datacatessen.com/tags/presto/</guid><description/></item><item><title>tech</title><link>https://datacatessen.com/tags/tech/</link><pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate><guid>https://datacatessen.com/tags/tech/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Datacatessen</title>
+    <link>https://datacatessen.com/tags/</link>
+    <description>Recent content in Tags on Datacatessen</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Copyright © 2020 Datacatessen, LLC. All Rights Reserved.</copyright>
+    <lastBuildDate>Sun, 14 Jun 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://datacatessen.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>open-source</title>
+      <link>https://datacatessen.com/tags/open-source/</link>
+      <pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://datacatessen.com/tags/open-source/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>presto</title>
+      <link>https://datacatessen.com/tags/presto/</link>
+      <pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://datacatessen.com/tags/presto/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tech</title>
+      <link>https://datacatessen.com/tags/tech/</link>
+      <pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://datacatessen.com/tags/tech/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
