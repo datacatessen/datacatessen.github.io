@@ -3,11 +3,11 @@
 }
 
 ::-webkit-scrollbar {
-    background-color: #1C1E1F;
+    background-color: #EEEEEE;
 }
 
 ::-webkit-scrollbar-thumb{
-    background-color: #2A2C2E;
+    background-color: #3d5678;
 }
 
 ::-webkit-scrollbar-corner {
@@ -20,13 +20,13 @@ html, body {
     line-height: 1.6;
     height: 100%;
     margin: 0px;
-    background-color:#ffffff;
+    background-color: #f5fdff;
     color : #1A2433;
 }
 
 a {
     text-decoration: none;
-    color: #389DFF;
+    color: #0080ff;
 }
 
 a:hover {
@@ -45,7 +45,7 @@ aside {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-right: 1px solid #3D3D3D;
+    /* border-right: 1px solid #3D3D3D; */
     transition: 0.3s; /* 0.5 second transition effect to slide in the sidenav */
 }
 
@@ -122,7 +122,7 @@ aside nav a:hover {
     top: 0px;
     padding: 10px;
     color:rgba(238, 238, 238, 0.664);
-    background-color: rgba(61, 61, 61, 0.555);
+    background-color: rgba(26, 36, 51, 0.66);
 }
 
 .list-item {
@@ -251,6 +251,9 @@ blockquote {
     border-top: 1px solid #3D3D3D;
 }
 
+.fa-envelope {
+  color: #ffffff;
+}
 
 .post p{
     margin:4px 0px;
@@ -308,7 +311,7 @@ footer{
     padding: 30px;
     margin-top: 40px;
     border-top: 1px solid #3D3D3D;
-    background: linear-gradient(to right,#1a2433 0%,#253449 80%,#253449 100%);
+    background: linear-gradient(to right,#253449 0%,#3d5678 80%,#3d5678 100%);
 }
 
 .footer-content{
@@ -321,7 +324,7 @@ footer{
 }
 
 .copyright{
-    color: rgb(156, 151, 143);
+    color: #b0bbbf;
     text-align: center;
 }
 
