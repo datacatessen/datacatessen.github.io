@@ -101,7 +101,7 @@ aside nav a {
     white-space: nowrap;
     text-align: left;
     transition: 0.2s;
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 aside nav a:hover {
