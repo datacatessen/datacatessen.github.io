@@ -1,13 +1,22 @@
 {{ define "main" }}
-    {{with .Title}}
-    <h1 id="title">{{.}}</h1>
-    {{else}}
-    <div class="spacer"></div>
+    <h1 id="title">{{.Title}}</h1>
+    {{if .Params.blog}}
+    <div class="row blog-meta">
+      <div class="column-blog">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i> {{.Params.PublishDate.Format "Monday, January 2, 2006"}}
+      </div>
+      <div class="column-blog">
+      <i class="fa fa-user" aria-hidden="true"></i> {{.Params.author}}
+      </div>
+      <div class="column-blog">
+        <i class="fa fa-tags" aria-hidden="true"></i> {{delimit .Params.tags ", "}}
+      </div>
+      <br>
+    </div>
     {{end}}
     {{ with .Params.githubrepo}}
        github repository : <a href="{{.}}">{{.}}</a>
     {{end}}
-    {{.TableOfContents}}
     {{.Content}}
     {{if ne .Section ""}}
     <div class="nav-next-prev">

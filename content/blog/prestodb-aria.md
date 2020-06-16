@@ -1,6 +1,8 @@
 ---
 title: "Getting Started with PrestoDB and Aria Scan Optimizations"
-date: 2020-06-14
+author: "Adam Shook"
+date: 2020-06-15
+blog: true
 draft: false
 tags: ["presto", "open-source", "tech"]
 ---
@@ -9,7 +11,7 @@ tags: ["presto", "open-source", "tech"]
 
 Presto is a massively parallel processing (MPP) SQL execution engine.  The execution engine is decoupled from data storage, and the project contains numerous plugins, called _Connectors_, that provide the Presto engine with data for query execution.  Data is read from the data store, then handed to Presto where it takes over to perform the operations of the query, such as joining data and performing aggregations.  This decoupling of data storage and execution allows for a single Presto instance to query various data sources, providing a very powerful federated query layer.  There are many connectors available for Presto, and the community regularly provides additional connectors for data stores.
 
-The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive metastore, which exposes metadata about the tables defined in the metastore.  Data is typically stored in HDFS or S3, and the metastore provides information about where the files are stored and in what format, typically ORC but there are other supported formats such as Avro and Parquet.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  [ORC (Optimized Row Columnar)](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC) format is a very standard and common format for storing data, as it provides good compression and performance.
+The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive Metastore, which exposes metadata about the tables defined in the Metastore.  Data is typically stored in HDFS or S3, and the Metastore provides information about where the files are stored and in what format; typically ORC but other supported formats like Avro and Parquet are supported.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  [ORC (Optimized Row Columnar)](https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC) format is a very standard and common format for storing data, as it provides good compression and performance.
 
 Presto has two core services for executing queries. A _Coordinator_, which is responsible for query parsing and scheduling (among other things), and many _Workers_ which execute the queries in parallel.  The Coordinator can also act as a Worker, though it is not used for production environments.  Since we're playing with Presto here, we'll just use one node to act as both a Coordinator and Worker.  More detailed documentation, including installation details, can be found [here](https://prestodb.io/docs/current/).
 
@@ -74,7 +76,7 @@ hive.allow-drop-table=true
 connector.name=tpch
 ```
 
-We're now ready to build our Docker container and start Presto using `host` networking so it can talk to the metastore and HDFS which is running on the host (also in Docker).
+We're now ready to build our Docker container and start Presto using `host` networking so it can talk to the Metastore and HDFS which is running on the host (also in Docker).
 
 ```bash
 docker build . -t prestodb:latest
@@ -137,7 +139,11 @@ Fragment 1 [SOURCE]
 
 ```
 
-Query plans are read bottom-up, starting with Fragment 1 that will scan the `lineitem` table, performing the filter on the `shipdate` column to apply the predicate.  It will then perform a partial aggregation for each split, and exchange that partial result to the next stage `Fragment 0` to perform the final aggregation before delivering the results to the client.
+Query plans are read bottom-up, starting with `Fragment 1` that will scan the `lineitem` table in parallel, performing the filter on the `shipdate` column to apply the predicate.  It will then perform a partial aggregation for each split, and exchange that partial result to the next stage `Fragment 0` to perform the final aggregation before delivering the results to the client. In an effort to visualize the plan, see below. Note the horizontal line towards the bottom of the diagram, indicating which code executes in the Hive Connector and which code executes in the Presto engine.
+
+![Query Plan 1](/blog/prestodb-aria/query-plan-1.png)
+
+We'll now execute this query!
 
 ```SQL
 presto:tpch> SELECT COUNT(shipdate) FROM lineitem WHERE shipdate BETWEEN DATE '1992-01-01' AND DATE '1992-12-31';
@@ -151,10 +157,9 @@ Splits: 367 total, 367 done (100.00%)
 0:09 [600M rows, 928MB] [63.2M rows/s, 97.7MB/s]
 ```
 
-Running this query, we see there are a little over 76 million rows `lineitem` table in the year 1992.  It took about 9 seconds to execute this query, processing 600 million rows.
+We see there are a little over 76 million rows `lineitem` table in the year 1992.  It took about 9 seconds to execute this query, processing 600 million rows.
 
-
-Now let's set the session properties to enable the Aria features and take a look at the same explain plan.
+Now let's set the session properties `pushdown_subfields_enabled` and `hive.pushdown_filter_enabled` to enable the Aria features and take a look at the same explain plan.
 
 ```SQL
 presto:tpch> SET SESSION pushdown_subfields_enabled=true;
@@ -186,7 +191,11 @@ Fragment 1 [SOURCE]
                     :: [[1992-01-01, 1992-12-31]]
 ```
 
-Note the major difference in the query plan at the very bottom, the inclusion of `shipdate` column in the `TableScan` operation. We see here that the connector now notices the predicate on the `shipdate` column of `1992-01-01` to `1992-12-31`.  Let's give it a whirl.
+Note the major difference in the query plan at the very bottom, the inclusion of `shipdate` column in the `TableScan` operation. We see here that the connector now notices the predicate on the `shipdate` column of `1992-01-01` to `1992-12-31`.  To visualize, we see this predicate is pushed down to the connector, removing the necessity of the engine to filter this data.
+
+![Query Plan 2](/blog/prestodb-aria/query-plan-2.png)
+
+We'll run this query again!
 
 ```SQL
 presto:tpch> SELECT COUNT(shipdate) FROM lineitem WHERE shipdate BETWEEN DATE '1992-01-01' AND DATE '1992-12-31';
