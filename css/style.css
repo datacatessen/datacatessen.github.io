@@ -101,7 +101,7 @@ aside nav a {
     white-space: nowrap;
     text-align: left;
     transition: 0.2s;
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 aside nav a:hover {
@@ -215,6 +215,11 @@ h1, h2, h3 {
     border-bottom: 1px solid #3D3D3D;
 }
 
+.blog-meta {
+  font-size: 16px;
+  font-weight: normal;
+}
+
 .column-main {
   float: left;
   width: 50%;
@@ -225,6 +230,12 @@ h1, h2, h3 {
   float: left;
   width: 32.5%;
   margin: 0.3%;
+}
+
+.column-blog {
+  float: left;
+  width: 33%;
+  text-align: center;
 }
 
 /* Clear floats after the columns */

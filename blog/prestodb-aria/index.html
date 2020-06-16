@@ -84,16 +84,27 @@
 </aside>
 <main id="main">
             <div class="content main-bg-image">
-    
     <h1 id="title">Getting Started with PrestoDB and Aria Scan Optimizations</h1>
     
+    <div class="row blog-meta">
+      <div class="column-blog">
+        <i class="far fa-calendar-alt" aria-hidden="true"></i> Monday, June 15, 2020
+      </div>
+      <div class="column-blog">
+      <i class="fa fa-user" aria-hidden="true"></i> Adam Shook
+      </div>
+      <div class="column-blog">
+        <i class="fa fa-tags" aria-hidden="true"></i> presto, open-source, tech
+      </div>
+      <br>
+    </div>
     
-    <nav id="TableOfContents"></nav>
+    
     <p><a href="https://prestodb.io" target="_blank">PrestoDB</a>
  recently released a set of experimental features under their Aria project in order to increase table scan performance of data stored in ORC files via the Hive Connector.  In this post, we&rsquo;ll check out these new features at a very basic level using a test environment of PrestoDB on Docker.  To find out more about the Aria features, you can check out the <a href="https://engineering.fb.com/data-infrastructure/aria-presto/" target="_blank">Facebook Engineering</a>
  blog post which was published June 2019.</p>
 <p>Presto is a massively parallel processing (MPP) SQL execution engine.  The execution engine is decoupled from data storage, and the project contains numerous plugins, called <em>Connectors</em>, that provide the Presto engine with data for query execution.  Data is read from the data store, then handed to Presto where it takes over to perform the operations of the query, such as joining data and performing aggregations.  This decoupling of data storage and execution allows for a single Presto instance to query various data sources, providing a very powerful federated query layer.  There are many connectors available for Presto, and the community regularly provides additional connectors for data stores.</p>
-<p>The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive metastore, which exposes metadata about the tables defined in the metastore.  Data is typically stored in HDFS or S3, and the metastore provides information about where the files are stored and in what format, typically ORC but there are other supported formats such as Avro and Parquet.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual&#43;ORC" target="_blank">ORC (Optimized Row Columnar)</a>
+<p>The Hive Connector is often considered the standard connector for Presto.  This connector is configured to connect to a Hive Metastore, which exposes metadata about the tables defined in the Metastore.  Data is typically stored in HDFS or S3, and the Metastore provides information about where the files are stored and in what format; typically ORC but other supported formats like Avro and Parquet are supported.  The Hive connector allows the Presto engine to scan data from HDFS/S3 in parallel into the engine to execute your query.  <a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual&#43;ORC" target="_blank">ORC (Optimized Row Columnar)</a>
  format is a very standard and common format for storing data, as it provides good compression and performance.</p>
 <p>Presto has two core services for executing queries. A <em>Coordinator</em>, which is responsible for query parsing and scheduling (among other things), and many <em>Workers</em> which execute the queries in parallel.  The Coordinator can also act as a Worker, though it is not used for production environments.  Since we&rsquo;re playing with Presto here, we&rsquo;ll just use one node to act as both a Coordinator and Worker.  More detailed documentation, including installation details, can be found <a href="https://prestodb.io/docs/current/" target="_blank">here</a>
 .</p>
@@ -144,7 +155,7 @@ hive.metastore.username<span class="o">=</span>hive
 hive.allow-drop-table<span class="o">=</span><span class="nb">true</span>
 </code></pre></div><p><code>etc/catalog/tpch.properties</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">connector.name<span class="o">=</span>tpch
-</code></pre></div><p>We&rsquo;re now ready to build our Docker container and start Presto using <code>host</code> networking so it can talk to the metastore and HDFS which is running on the host (also in Docker).</p>
+</code></pre></div><p>We&rsquo;re now ready to build our Docker container and start Presto using <code>host</code> networking so it can talk to the Metastore and HDFS which is running on the host (also in Docker).</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker build . -t prestodb:latest
 docker run --name presto --network host prestodb:latest
 </code></pre></div><p>We&rsquo;ll use the <a href="https://prestodb.io/docs/current/installation/cli.html" target="_blank">Presto CLI</a>
@@ -190,7 +201,9 @@ docker run --name presto --network host prestodb:latest
                 <span class="n">LAYOUT</span><span class="p">:</span> <span class="n">tpch</span><span class="p">.</span><span class="n">lineitem</span><span class="err">{</span><span class="n">domains</span><span class="o">=</span><span class="err">{</span><span class="n">shipdate</span><span class="o">=</span><span class="p">[</span> <span class="p">[[</span><span class="mi">1992</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span><span class="p">,</span> <span class="mi">1992</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="p">]]</span> <span class="p">]</span><span class="err">}}</span>
                 <span class="n">shipdate</span> <span class="p">:</span><span class="o">=</span> <span class="n">shipdate</span><span class="p">:</span><span class="nb">date</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="n">REGULAR</span>
 
-</code></pre></div><p>Query plans are read bottom-up, starting with Fragment 1 that will scan the <code>lineitem</code> table, performing the filter on the <code>shipdate</code> column to apply the predicate.  It will then perform a partial aggregation for each split, and exchange that partial result to the next stage <code>Fragment 0</code> to perform the final aggregation before delivering the results to the client.</p>
+</code></pre></div><p>Query plans are read bottom-up, starting with <code>Fragment 1</code> that will scan the <code>lineitem</code> table in parallel, performing the filter on the <code>shipdate</code> column to apply the predicate.  It will then perform a partial aggregation for each split, and exchange that partial result to the next stage <code>Fragment 0</code> to perform the final aggregation before delivering the results to the client. In an effort to visualize the plan, see below. Note the horizontal line towards the bottom of the diagram, indicating which code executes in the Hive Connector and which code executes in the Presto engine.</p>
+<p><img src="/blog/prestodb-aria/query-plan-1.png" alt="Query Plan 1"></p>
+<p>We&rsquo;ll now execute this query!</p>
 <div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="n">presto</span><span class="p">:</span><span class="n">tpch</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="n">shipdate</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">lineitem</span> <span class="k">WHERE</span> <span class="n">shipdate</span> <span class="k">BETWEEN</span> <span class="nb">DATE</span> <span class="s1">&#39;1992-01-01&#39;</span> <span class="k">AND</span> <span class="nb">DATE</span> <span class="s1">&#39;1992-12-31&#39;</span><span class="p">;</span>
   <span class="n">_col0</span>   
 <span class="c1">----------
@@ -200,8 +213,8 @@ docker run --name presto --network host prestodb:latest
 <span class="n">Query</span> <span class="mi">20200609</span><span class="n">_154258_00019_ug2v4</span><span class="p">,</span> <span class="n">FINISHED</span><span class="p">,</span> <span class="mi">1</span> <span class="n">node</span>
 <span class="n">Splits</span><span class="p">:</span> <span class="mi">367</span> <span class="n">total</span><span class="p">,</span> <span class="mi">367</span> <span class="n">done</span> <span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="mi">00</span><span class="o">%</span><span class="p">)</span>
 <span class="mi">0</span><span class="p">:</span><span class="mi">09</span> <span class="p">[</span><span class="mi">600</span><span class="n">M</span> <span class="k">rows</span><span class="p">,</span> <span class="mi">928</span><span class="n">MB</span><span class="p">]</span> <span class="p">[</span><span class="mi">63</span><span class="p">.</span><span class="mi">2</span><span class="n">M</span> <span class="k">rows</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">97</span><span class="p">.</span><span class="mi">7</span><span class="n">MB</span><span class="o">/</span><span class="n">s</span><span class="p">]</span>
-</code></pre></div><p>Running this query, we see there are a little over 76 million rows <code>lineitem</code> table in the year 1992.  It took about 9 seconds to execute this query, processing 600 million rows.</p>
-<p>Now let&rsquo;s set the session properties to enable the Aria features and take a look at the same explain plan.</p>
+</code></pre></div><p>We see there are a little over 76 million rows <code>lineitem</code> table in the year 1992.  It took about 9 seconds to execute this query, processing 600 million rows.</p>
+<p>Now let&rsquo;s set the session properties <code>pushdown_subfields_enabled</code> and <code>hive.pushdown_filter_enabled</code> to enable the Aria features and take a look at the same explain plan.</p>
 <div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="n">presto</span><span class="p">:</span><span class="n">tpch</span><span class="o">&gt;</span> <span class="k">SET</span> <span class="k">SESSION</span> <span class="n">pushdown_subfields_enabled</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
 <span class="k">SET</span> <span class="k">SESSION</span>
 <span class="n">presto</span><span class="p">:</span><span class="n">tpch</span><span class="o">&gt;</span> <span class="k">SET</span> <span class="k">SESSION</span> <span class="n">hive</span><span class="p">.</span><span class="n">pushdown_filter_enabled</span><span class="o">=</span><span class="k">true</span><span class="p">;</span>
@@ -229,7 +242,9 @@ docker run --name presto --network host prestodb:latest
                 <span class="n">LAYOUT</span><span class="p">:</span> <span class="n">tpch</span><span class="p">.</span><span class="n">lineitem</span><span class="err">{</span><span class="n">domains</span><span class="o">=</span><span class="err">{</span><span class="n">shipdate</span><span class="o">=</span><span class="p">[</span> <span class="p">[[</span><span class="mi">1992</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span><span class="p">,</span> <span class="mi">1992</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="p">]]</span> <span class="p">]</span><span class="err">}}</span>
                 <span class="n">shipdate</span> <span class="p">:</span><span class="o">=</span> <span class="n">shipdate</span><span class="p">:</span><span class="nb">date</span><span class="p">:</span><span class="mi">10</span><span class="p">:</span><span class="n">REGULAR</span>
                     <span class="p">::</span> <span class="p">[[</span><span class="mi">1992</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">01</span><span class="p">,</span> <span class="mi">1992</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">31</span><span class="p">]]</span>
-</code></pre></div><p>Note the major difference in the query plan at the very bottom, the inclusion of <code>shipdate</code> column in the <code>TableScan</code> operation. We see here that the connector now notices the predicate on the <code>shipdate</code> column of <code>1992-01-01</code> to <code>1992-12-31</code>.  Let&rsquo;s give it a whirl.</p>
+</code></pre></div><p>Note the major difference in the query plan at the very bottom, the inclusion of <code>shipdate</code> column in the <code>TableScan</code> operation. We see here that the connector now notices the predicate on the <code>shipdate</code> column of <code>1992-01-01</code> to <code>1992-12-31</code>.  To visualize, we see this predicate is pushed down to the connector, removing the necessity of the engine to filter this data.</p>
+<p><img src="/blog/prestodb-aria/query-plan-2.png" alt="Query Plan 2"></p>
+<p>We&rsquo;ll run this query again!</p>
 <div class="highlight"><pre class="chroma"><code class="language-SQL" data-lang="SQL"><span class="n">presto</span><span class="p">:</span><span class="n">tpch</span><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="k">COUNT</span><span class="p">(</span><span class="n">shipdate</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">lineitem</span> <span class="k">WHERE</span> <span class="n">shipdate</span> <span class="k">BETWEEN</span> <span class="nb">DATE</span> <span class="s1">&#39;1992-01-01&#39;</span> <span class="k">AND</span> <span class="nb">DATE</span> <span class="s1">&#39;1992-12-31&#39;</span><span class="p">;</span>
   <span class="n">_col0</span>   
 <span class="c1">----------
