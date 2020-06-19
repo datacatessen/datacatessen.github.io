@@ -1,15 +1,31 @@
 <head>
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-67845834-1', 'auto');
+    ga('require', 'linkid');
+    ga('send', 'pageview');
+  </script>
   <meta charset=utf-8>
   <meta http-equiv=X-UA-Compatible content="IE=edge">
   <meta name=viewport content="width=device-width,initial-scale=1">
   {{with .Site.Params.description -}}
-    <meta name="description" content="{{.}}">
+  <meta name="description" content="{{.}}">
   {{ end }}
   {{- with .Site.Params.author -}}
-    <meta name="Author" content="{{.}}">
+  <meta name="Author" content="{{.}}">
   {{ end }}
   {{- with .Site.Params.keywords -}}
-    <meta name="keywords" content="{{.}}">
+  <meta name="keywords" content="{{.}}">
   {{ end -}}
   <meta content="noodp" name="robots">
   <title>{{ .Site.Title }}</title>
