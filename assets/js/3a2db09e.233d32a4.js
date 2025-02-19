@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdatacatessen=self.webpackChunkdatacatessen||[]).push([[121],{8070:e=>{e.exports=JSON.parse('{"tags":[{"label":"Presto","permalink":"/blog/tags/presto","description":"Presto DB is an open-source SQL query engine","count":1}]}')}}]);

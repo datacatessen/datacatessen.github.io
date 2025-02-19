@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdatacatessen=self.webpackChunkdatacatessen||[]).push([[472],{5513:t=>{t.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Getting Started with PrestoDB and Aria Scan Optimizations","permalink":"/blog/2020/06/15/prestodb-aria","unlisted":false,"date":"2020-06-15T00:00:00.000Z"}]}')}}]);
